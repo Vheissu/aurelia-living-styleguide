@@ -1,0 +1,25 @@
+{
+  "name": "aurelia-living-styleguide",
+  "version": "1.0.0",
+  "description": "A living styleguide application built with Aurelia.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vheissu/aurelia-living-styleguide.git"
+  },
+  "author": "Dwayne Charrington <dwaynecharrington@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Vheissu/aurelia-living-styleguide/issues"
+  },
+  "homepage": "https://github.com/Vheissu/aurelia-living-styleguide#readme",
+  "dependencies": {
+    "express": "^4.14.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.0.30"
+  }
+}
