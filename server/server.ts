@@ -1,19 +1,53 @@
-import express = require('express');
-import path = require('path');
-var port: number = process.env.PORT || 3000;
-var app = express();
- 
-app.use('/app', express.static(path.resolve(__dirname, 'app')));
-app.use('/libs', express.static(path.resolve(__dirname, 'libs')));
- 
-var renderIndex = (req: express.Request, res: express.Response) => {
-    res.sendFile(path.resolve(__dirname, 'index.html'));
+import * as express from "express";
+import { join } from "path";
+import * as favicon from "serve-favicon";
+import { json, urlencoded } from "body-parser";
+
+import { loginRouter } from "./routes/login";
+import { protectedRouter } from "./routes/protected";
+
+const app: express.Application = express();
+app.disable("x-powered-by");
+
+app.use(favicon(join(__dirname, "../client", "favicon.ico")));
+app.use(express.static(join(__dirname, '../client')));
+
+app.use(json());
+app.use(urlencoded({ extended: true }));
+
+// api routes
+app.use("/api", protectedRouter);
+app.use("/login", loginRouter);
+
+app.use('/client', express.static(join(__dirname, '../client')));
+
+if (app.get("env") === "development") {
+
+    app.use(express.static(join(__dirname, '../node_modules')));
+
+    app.use(function(err, req: express.Request, res: express.Response, next: express.NextFunction) {
+        res.status(err.status || 500);
+        res.json({
+            error: err,
+            message: err.message
+        });
+    });
 }
- 
-app.get('/*', renderIndex);
- 
-var server = app.listen(port, function() {
-    var host = server.address().address;
-    var port = server.address().port;
-    console.log('This express app is listening on port:' + port);
+
+// catch 404 and forward to error handler
+app.use(function(req: express.Request, res: express.Response, next) {
+    let err = new Error("Not Found");
+    next(err);
 });
+
+// production error handler
+// no stacktrace leaked to user
+app.use(function(err: any, req: express.Request, res: express.Response, next: express.NextFunction) {
+    res.status(err.status || 500);
+    res.json({
+        error: {},
+        message: err.message
+    });
+});
+
+export { app }
